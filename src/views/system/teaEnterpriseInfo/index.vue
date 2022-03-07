@@ -10,114 +10,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!--<el-form-item label="主体类型" prop="type">
-        <el-select v-model="queryParams.type" placeholder="请选择主体类型" clearable size="small">
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="企业性质" prop="nature">
-        <el-input
-          v-model="queryParams.nature"
-          placeholder="请输入企业性质"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="成立时间" prop="setUpDate">
-        <el-date-picker clearable size="small"
-          v-model="queryParams.setUpDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择成立时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="法人代表" prop="legalPerson">
-        <el-input
-          v-model="queryParams.legalPerson"
-          placeholder="请输入法人代表"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="法人身份证" prop="legalPersonIdCard">
-        <el-input
-          v-model="queryParams.legalPersonIdCard"
-          placeholder="请输入法人身份证"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="企业经营状态" prop="operationStatus">
-        <el-select v-model="queryParams.operationStatus" placeholder="请选择企业经营状态:" clearable size="small">
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="注册资本" prop="regCapital">
-        <el-input
-          v-model="queryParams.regCapital"
-          placeholder="请输入注册资本"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="企业地址" prop="address">
-        <el-input
-          v-model="queryParams.address"
-          placeholder="请输入企业地址"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="企业简介" prop="about">
-        <el-input
-          v-model="queryParams.about"
-          placeholder="请输入企业简介"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="种植面积(亩)" prop="cultivatedArea">
-        <el-input
-          v-model="queryParams.cultivatedArea"
-          placeholder="请输入种植面积(亩)"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="从业人员数量" prop="workPersonNum">
-        <el-input
-          v-model="queryParams.workPersonNum"
-          placeholder="请输入从业人员数量"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="年销量" prop="yearSales">
-        <el-input
-          v-model="queryParams.yearSales"
-          placeholder="请输入年销量"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="年产量" prop="yearOutput">
-        <el-input
-          v-model="queryParams.yearOutput"
-          placeholder="请输入年产量"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>-->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -187,11 +79,12 @@
       <el-table-column label="企业经营状态" align="center" prop="operationStatus" />
       <el-table-column label="注册资本" align="center" prop="regCapital" />
       <el-table-column label="企业地址" align="center" prop="address" />
-      <el-table-column label="企业简介" align="center" prop="about" />
+<!--      <el-table-column label="企业简介" align="center" prop="about" />-->
       <el-table-column label="种植面积(亩)" align="center" prop="cultivatedArea" />
       <el-table-column label="从业人员数量" align="center" prop="workPersonNum" />
-      <el-table-column label="年销量(斤)" align="center" prop="yearSales" />
-      <el-table-column label="年产量(斤)" align="center" prop="yearOutput" />
+      <!--<el-table-column label="年销量(斤)" align="center" prop="yearSales" />
+      <el-table-column label="年产量(斤)" align="center" prop="yearOutput" />-->
+      <el-table-column label="茶种类" align="center" prop="teaType" :formatter="teaTypeFormatter" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -221,21 +114,21 @@
     />
 
     <!-- 添加或修改茶企基本信息对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+    <el-dialog :center="true" :title="title" :visible.sync="open" width="800px" append-to-body>
+      <el-form :inline="true" ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="企业名称" prop="enterpriseName">
-          <el-input v-model="form.enterpriseName" placeholder="请输入企业名称" />
+          <el-input style="width: 240px" v-model="form.enterpriseName" placeholder="请输入企业名称" />
         </el-form-item>
         <el-form-item label="主体类型" prop="type">
-          <el-select v-model="form.type" placeholder="请选择主体类型">
+          <el-select style="width: 240px" v-model="form.type" placeholder="请选择主体类型">
             <el-option label="请选择字典生成" value="" />
           </el-select>
         </el-form-item>
         <el-form-item label="企业性质" prop="nature">
-          <el-input v-model="form.nature" placeholder="请输入企业性质" />
+          <el-input style="width: 240px" v-model="form.nature" placeholder="请输入企业性质" />
         </el-form-item>
         <el-form-item label="成立时间" prop="setUpDate">
-          <el-date-picker clearable size="small"
+          <el-date-picker style="width: 240px" clearable size="small"
             v-model="form.setUpDate"
             type="date"
             value-format="yyyy-MM-dd"
@@ -243,13 +136,13 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="法人代表" prop="legalPerson">
-          <el-input v-model="form.legalPerson" placeholder="请输入法人代表" />
+          <el-input style="width: 240px" v-model="form.legalPerson" placeholder="请输入法人代表" />
         </el-form-item>
         <el-form-item label="法人身份证" prop="legalPersonIdCard">
-          <el-input v-model="form.legalPersonIdCard" placeholder="请输入法人身份证" />
+          <el-input style="width: 240px" v-model="form.legalPersonIdCard" placeholder="请输入法人身份证" />
         </el-form-item>
         <el-form-item label="企业经营状态">
-          <el-select v-model="form.operationStatus" placeholder="请选择主体类型">
+          <el-select style="width: 240px" v-model="form.operationStatus" placeholder="请选择主体类型">
             <el-option
               v-for="dictIndex in operationStatusOptions"
               :key="dictIndex.dictValue"
@@ -258,26 +151,42 @@
           </el-select>
         </el-form-item>
         <el-form-item label="注册资本" prop="regCapital">
-          <el-input v-model="form.regCapital" placeholder="请输入注册资本" />
+          <el-input style="width: 240px" v-model="form.regCapital" placeholder="请输入注册资本" />
         </el-form-item>
         <el-form-item label="企业地址" prop="address">
-          <el-input v-model="form.address" placeholder="请输入企业地址" />
+          <el-input style="width: 240px" v-model="form.address" placeholder="请输入企业地址" />
         </el-form-item>
-        <el-form-item label="企业简介" prop="about">
+        <!--<el-form-item label="企业简介" prop="about">
           <el-input v-model="form.about" placeholder="请输入企业简介" />
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="种植面积(亩)" prop="cultivatedArea">
-          <el-input v-model="form.cultivatedArea" placeholder="请输入种植面积(亩)" />
+          <el-input style="width: 240px" v-model="form.cultivatedArea" placeholder="请输入种植面积(亩)" />
         </el-form-item>
         <el-form-item label="从业人员数量" prop="workPersonNum">
-          <el-input v-model="form.workPersonNum" placeholder="请输入从业人员数量" />
+          <el-input style="width: 240px" v-model="form.workPersonNum" placeholder="请输入从业人员数量" />
         </el-form-item>
-        <el-form-item label="年销量(斤)" prop="yearSales">
+        <el-form-item label="茶种类" prop="teaType">
+          <el-select
+            v-model="form.teaType"
+            multiple
+            filterable
+            allow-create
+            default-first-option
+            placeholder="请选择茶种类">
+            <el-option
+              v-for="item in teaTypeOptions"
+              :key="item.dictValue"
+              :label="item.dictLabel"
+              :value="Number.parseInt(item.dictValue)">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <!--<el-form-item label="年销量(斤)" prop="yearSales">
           <el-input v-model="form.yearSales" placeholder="请输入年销量" />
         </el-form-item>
         <el-form-item label="年产量(斤)" prop="yearOutput">
           <el-input v-model="form.yearOutput" placeholder="请输入年产量" />
-        </el-form-item>
+        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -336,6 +245,7 @@ export default {
       // 表单参数
       form: {},
       operationStatusOptions: [], //茶企经营状态字典
+      teaTypeOptions: [], //茶种类选项
       // 表单校验
       rules: {
       }
@@ -344,6 +254,9 @@ export default {
   created() {
     this.getDicts('tea_enterprise_operation_status').then((response) => {
       this.operationStatusOptions = response.data;
+    });
+    this.getDicts('sys_tea_type').then((response) => {
+      this.teaTypeOptions = response.data;
     });
     this.getList();
 
@@ -376,11 +289,9 @@ export default {
         operationStatus: null,
         regCapital: null,
         address: null,
-        about: null,
         cultivatedArea: null,
         workPersonNum: null,
-        yearSales: null,
-        yearOutput: null
+        teaType: []
       };
       this.resetForm("form");
     },
@@ -464,6 +375,25 @@ export default {
           this.download(response.msg);
           this.exportLoading = false;
         }).catch(() => {});
+    },
+    //茶类型格式化
+    teaTypeFormatter(row,column,value){
+      if(!value){
+        return '';
+      }
+      let result = '';
+      value.forEach(v => {
+        this.teaTypeOptions.forEach(teaType => {
+          if(teaType.dictValue == v){
+            if(!result){
+              result += teaType.dictLabel;
+            }else {
+              result += ',' + teaType.dictLabel;
+            }
+          }
+        });
+      });
+      return result;
     }
   }
 };

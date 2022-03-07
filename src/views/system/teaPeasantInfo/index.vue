@@ -2,109 +2,26 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="所属企业" prop="enterpriseId">
-        <el-input
+        <!--<el-input
           v-model="queryParams.enterpriseId"
           placeholder="请输入所属企业"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
-        />
+        />-->
+        <el-select @keyup.enter.native="handleQuery" v-model="queryParams.enterpriseId" filterable placeholder="请选择所属企业">
+          <el-option
+            v-for="item in enterpriseInfoList"
+            :key="item.id"
+            :label="item.enterpriseName"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="茶农姓名" prop="personName">
         <el-input
           v-model="queryParams.personName"
           placeholder="请输入茶农姓名"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="茶农性别1=男 2=女" prop="sex">
-        <el-select v-model="queryParams.sex" placeholder="请选择茶农性别1=男 2=女" clearable size="small">
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="茶农年龄" prop="age">
-        <el-input
-          v-model="queryParams.age"
-          placeholder="请输入茶农年龄"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="茶农民族" prop="nation">
-        <el-input
-          v-model="queryParams.nation"
-          placeholder="请输入茶农民族"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="政治面貌" prop="politicsStatus">
-        <el-select v-model="queryParams.politicsStatus" placeholder="请选择政治面貌" clearable size="small">
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="联系方式" prop="mobile">
-        <el-input
-          v-model="queryParams.mobile"
-          placeholder="请输入联系方式"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="茶农技能" prop="skill">
-        <el-input
-          v-model="queryParams.skill"
-          placeholder="请输入茶农技能"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="茶农职业" prop="job">
-        <el-input
-          v-model="queryParams.job"
-          placeholder="请输入茶农职业"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="信誉等级1=极差2=中等3=良好4=优秀5=极好" prop="creditLevel">
-        <el-input
-          v-model="queryParams.creditLevel"
-          placeholder="请输入信誉等级1=极差2=中等3=良好4=优秀5=极好"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="学历1=小学2=初中3=高中4=大专5=本科6=研究生" prop="education">
-        <el-input
-          v-model="queryParams.education"
-          placeholder="请输入学历1=小学2=初中3=高中4=大专5=本科6=研究生"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="照片" prop="pic">
-        <el-input
-          v-model="queryParams.pic"
-          placeholder="请输入照片"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="家庭住址" prop="homeAddress">
-        <el-input
-          v-model="queryParams.homeAddress"
-          placeholder="请输入家庭住址"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -165,19 +82,27 @@
 
     <el-table v-loading="loading" :data="teaPeasantInfoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="ID" align="center" prop="id" />
-      <el-table-column label="所属企业" align="center" prop="enterpriseId" />
+      <el-table-column label="照片" align="center" prop="pic">
+        <template slot-scope="scope">
+          <el-avatar
+            shape="square"
+            :size="100"
+            fit="fill"
+            :src="handleOssUrl(scope.row.pic)"
+          ></el-avatar>
+        </template>
+      </el-table-column>
+      <el-table-column label="所属企业" align="center" prop="enterpriseId" :formatter="enterpriseFormatter" />
       <el-table-column label="茶农姓名" align="center" prop="personName" />
-      <el-table-column label="茶农性别1=男 2=女" align="center" prop="sex" />
+      <el-table-column label="茶农性别" align="center" prop="sex" :formatter="sexFormatter" />
       <el-table-column label="茶农年龄" align="center" prop="age" />
       <el-table-column label="茶农民族" align="center" prop="nation" />
-      <el-table-column label="政治面貌" align="center" prop="politicsStatus" />
+      <el-table-column label="政治面貌" align="center" prop="politicsStatus" :formatter="politicsStatusFormatter" />
       <el-table-column label="联系方式" align="center" prop="mobile" />
       <el-table-column label="茶农技能" align="center" prop="skill" />
       <el-table-column label="茶农职业" align="center" prop="job" />
-      <el-table-column label="信誉等级1=极差2=中等3=良好4=优秀5=极好" align="center" prop="creditLevel" />
-      <el-table-column label="学历1=小学2=初中3=高中4=大专5=本科6=研究生" align="center" prop="education" />
-      <el-table-column label="照片" align="center" prop="pic" />
+      <el-table-column label="信誉等级" align="center" prop="creditLevel" :formatter="creditLevelFormatter" />
+      <el-table-column label="学历" align="center" prop="education" :formatter="educationFormatter" />
       <el-table-column label="家庭住址" align="center" prop="homeAddress" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -198,7 +123,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -208,50 +133,94 @@
     />
 
     <!-- 添加或修改茶农基本信息对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-dialog :center="true" :title="title" :visible.sync="open" width="800px" append-to-body>
+      <el-form :inline="true" ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="所属企业" prop="enterpriseId">
-          <el-input v-model="form.enterpriseId" placeholder="请输入所属企业" />
+          <el-select v-model="form.enterpriseId" filterable placeholder="请选择">
+            <el-option
+              v-for="item in enterpriseInfoList"
+              :key="item.id"
+              :label="item.enterpriseName"
+              :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="茶农姓名" prop="personName">
-          <el-input v-model="form.personName" placeholder="请输入茶农姓名" />
+          <el-input style="width: 220px" v-model="form.personName" placeholder="请输入茶农姓名" />
         </el-form-item>
-        <el-form-item label="茶农性别1=男 2=女" prop="sex">
-          <el-select v-model="form.sex" placeholder="请选择茶农性别1=男 2=女">
-            <el-option label="请选择字典生成" value="" />
+        <el-form-item label="茶农性别" prop="sex">
+          <el-select style="width: 220px" v-model.number="form.sex" placeholder="请选择茶农性别">
+            <el-option
+              v-for="dictIndex in sexOptions"
+              :key="dictIndex.dictValue"
+              :label="dictIndex.dictLabel"
+              :value="Number.parseInt(dictIndex.dictValue)" />
           </el-select>
         </el-form-item>
         <el-form-item label="茶农年龄" prop="age">
-          <el-input v-model="form.age" placeholder="请输入茶农年龄" />
+          <el-input-number style="width: 220px" v-model="form.age" :min="1" :max="100" label="请输入茶农年龄"></el-input-number>
         </el-form-item>
         <el-form-item label="茶农民族" prop="nation">
-          <el-input v-model="form.nation" placeholder="请输入茶农民族" />
+          <el-input style="width: 220px" v-model="form.nation" placeholder="请输入茶农民族" />
         </el-form-item>
         <el-form-item label="政治面貌">
-          <el-radio-group v-model="form.politicsStatus">
-            <el-radio label="1">请选择字典生成</el-radio>
-          </el-radio-group>
+          <el-select style="width: 220px" v-model="form.politicsStatus" placeholder="请选择政治面貌">
+            <el-option
+              v-for="dictIndex in politicsStatusOptions"
+              :key="dictIndex.dictValue"
+              :label="dictIndex.dictLabel"
+              :value="dictIndex.dictValue" />
+          </el-select>
         </el-form-item>
         <el-form-item label="联系方式" prop="mobile">
-          <el-input v-model="form.mobile" placeholder="请输入联系方式" />
+          <el-input style="width: 220px" v-model="form.mobile" placeholder="请输入联系方式" />
         </el-form-item>
         <el-form-item label="茶农技能" prop="skill">
-          <el-input v-model="form.skill" placeholder="请输入茶农技能" />
+          <el-input style="width: 220px" v-model="form.skill" placeholder="请输入茶农技能" />
         </el-form-item>
         <el-form-item label="茶农职业" prop="job">
-          <el-input v-model="form.job" placeholder="请输入茶农职业" />
+          <el-input style="width: 220px" v-model="form.job" placeholder="请输入茶农职业" />
         </el-form-item>
-        <el-form-item label="信誉等级1=极差2=中等3=良好4=优秀5=极好" prop="creditLevel">
-          <el-input v-model="form.creditLevel" placeholder="请输入信誉等级1=极差2=中等3=良好4=优秀5=极好" />
+        <el-form-item label="信誉等级" prop="creditLevel">
+          <el-select style="width: 220px" v-model="form.creditLevel" placeholder="请选择信誉等级">
+            <el-option
+              v-for="dictIndex in creditLevelOptions"
+              :key="dictIndex.dictValue"
+              :label="dictIndex.dictLabel"
+              :value="Number.parseInt(dictIndex.dictValue)" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="学历1=小学2=初中3=高中4=大专5=本科6=研究生" prop="education">
-          <el-input v-model="form.education" placeholder="请输入学历1=小学2=初中3=高中4=大专5=本科6=研究生" />
-        </el-form-item>
-        <el-form-item label="照片" prop="pic">
-          <el-input v-model="form.pic" placeholder="请输入照片" />
+        <el-form-item label="学历" prop="education">
+          <el-select style="width: 220px" v-model="form.education" placeholder="请选择学历">
+            <el-option
+              v-for="dictIndex in educationOptions"
+              :key="dictIndex.dictValue"
+              :label="dictIndex.dictLabel"
+              :value="Number.parseInt(dictIndex.dictValue)" />
+          </el-select>
         </el-form-item>
         <el-form-item label="家庭住址" prop="homeAddress">
-          <el-input v-model="form.homeAddress" placeholder="请输入家庭住址" />
+          <el-input style="width: 220px" v-model="form.homeAddress" placeholder="请输入家庭住址" />
+        </el-form-item>
+        <el-form-item label="照片" prop="pic">
+<!--          <el-input style="width: 220px" v-model="form.pic" placeholder="请输入照片" />-->
+          <el-upload
+            action
+            list-type="picture-card"
+            :http-request="picUpload"
+            :multiple="false"
+            accept=".jpg,.png"
+            :limit="1"
+            :file-list="picList"
+            :on-exceed="onExceed"
+            :on-success="picUploadSuccess"
+            :on-preview="handlePictureCardPreview"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+          <el-dialog v-model="dialogVisible">
+            <img width="100%" :src="form.imgBase64" alt />
+          </el-dialog>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -264,6 +233,8 @@
 
 <script>
 import { listTeaPeasantInfo, getTeaPeasantInfo, delTeaPeasantInfo, addTeaPeasantInfo, updateTeaPeasantInfo, exportTeaPeasantInfo } from "@/api/system/teaPeasantInfo";
+import { listTeaEnterpriseInfoAll } from "@/api/system/teaEnterpriseInfo";
+import { upload } from '@/utils/OSSUtil'
 
 export default {
   name: "TeaPeasantInfo",
@@ -285,6 +256,13 @@ export default {
       total: 0,
       // 茶农基本信息表格数据
       teaPeasantInfoList: [],
+      sexOptions: [], //性别选项
+      politicsStatusOptions: [], //政治面貌选项
+      creditLevelOptions: [], //信誉等级选项
+      educationOptions: [], //学历选项
+      enterpriseInfoList: [], //企业列表
+      picList: [], //照片列表
+      dialogVisible: false,
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -318,7 +296,23 @@ export default {
     };
   },
   created() {
+    this.getDicts('sys_user_sex').then((response) => {
+      this.sexOptions = response.data;
+    });
+    this.getDicts('sys_politics_status').then((response) => {
+      this.politicsStatusOptions = response.data;
+    });
+    this.getDicts('tea_peasant_credit_level').then((response) => {
+      this.creditLevelOptions = response.data;
+    });
+    this.getDicts('sys_education').then((response) => {
+      this.educationOptions = response.data;
+    });
+    listTeaEnterpriseInfoAll().then(res => {
+      this.enterpriseInfoList = res.data;
+    });
     this.getList();
+
   },
   methods: {
     /** 查询茶农基本信息列表 */
@@ -344,7 +338,7 @@ export default {
         sex: null,
         age: null,
         nation: null,
-        politicsStatus: "0",
+        politicsStatus: null,
         mobile: null,
         skill: null,
         job: null,
@@ -380,12 +374,13 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const id = row.id || this.ids
+      const id = row.id || this.ids;
       getTeaPeasantInfo(id).then(response => {
         this.form = response.data;
         this.open = true;
         this.title = "修改茶农基本信息";
       });
+
     },
     /** 提交按钮 */
     submitForm() {
@@ -435,7 +430,82 @@ export default {
           this.download(response.msg);
           this.exportLoading = false;
         }).catch(() => {});
+    },
+    //照片上传
+    picUpload(e) {
+      let srcFileName = e.file.name
+      let lastModified = e.file.lastModified;
+      let fileNameArr = e.file.name.split('.');
+      let suffix = fileNameArr[fileNameArr.length - 1];
+      if(!suffix){
+        suffix = 'jpg';
+      }
+      let fileName =
+        'intelligent_agriculture/tea_peasant_pic/' +
+        this.$md5(lastModified + '' + e.file.size + '' + srcFileName) +
+        '.' + suffix;
+      upload(e, fileName, this)
+        .then((res) => {
+          e.onSuccess(res)
+        })
+        .catch((err) => {
+          e.onError()
+        })
+    },
+    //文件超出上限
+    onExceed(file, fileList) {
+      this.$message.error('文件超出上限咯')
+    },
+    picUploadSuccess(response) {
+      this.form.pic = response.name
+    },
+    handlePictureCardPreview(file){
+      this.form.pic = file.url
+      this.dialogVisible = true
+    },
+    //处理oss资源
+    handleOssUrl(url){
+      if (!url) {
+        return
+      }
+      if (url.indexOf('http') !== -1) {
+        return url
+      } else {
+        return this.$ossPre + url
+      }
+    },
+    //性别格式化
+    sexFormatter(row, column,value){
+      return this.selectDictLabel(this.sexOptions, value)
+    },
+    //政治面貌格式化
+    politicsStatusFormatter(row, column,value){
+      return this.selectDictLabel(this.politicsStatusOptions, value);
+    },
+    //信誉等级格式化
+    creditLevelFormatter(row, column,value){
+      return this.selectDictLabel(this.creditLevelOptions, value);
+    },
+    //学历格式化
+    educationFormatter(row, column,value){
+      return this.selectDictLabel(this.educationOptions, value);
+    },
+    //所属企业格式化
+    enterpriseFormatter(row, column,value){
+      let enterpriseName = '';
+      this.enterpriseInfoList.forEach(enterpriseInfo => {
+        if(value == enterpriseInfo.id){
+          enterpriseName = enterpriseInfo.enterpriseName;
+          return;
+        }
+      });
+      return enterpriseName;
     }
   }
 };
 </script>
+<style lang="scss" scoped>
+  ::v-deep .el-avatar img {
+    width: 100%;
+  }
+</style>

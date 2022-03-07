@@ -9,6 +9,14 @@ export function listTeaPeasantInfo(query) {
   })
 }
 
+// 查询全部茶农
+export function findAllPeasant() {
+  return request({
+    url: '/system/teaPeasantInfo/findAllPeasant',
+    method: 'get'
+  })
+}
+
 // 查询茶农基本信息详细
 export function getTeaPeasantInfo(id) {
   return request({
