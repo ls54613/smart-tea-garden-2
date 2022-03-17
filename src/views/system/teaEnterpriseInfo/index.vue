@@ -10,6 +10,15 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="所属区域" prop="region">
+        <el-select v-model="queryParams.region" filterable placeholder="请选择所属区域">
+          <el-option
+            v-for="dictIndex in regionOptions"
+            :key="dictIndex.dictValue"
+            :label="dictIndex.dictLabel"
+            :value="dictIndex.dictValue" />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -67,7 +76,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="企业名称" align="center" prop="enterpriseName" />
-      <el-table-column label="主体类型" align="center" prop="type" />
+      <el-table-column label="主体类型" align="center" prop="type" :formatter="zhutiTypeFormatter" />
       <el-table-column label="企业性质" align="center" prop="nature" />
       <el-table-column label="成立时间" align="center" prop="setUpDate" width="180">
         <template slot-scope="scope">
@@ -76,12 +85,13 @@
       </el-table-column>
       <el-table-column label="法人代表" align="center" prop="legalPerson" />
       <el-table-column label="法人身份证" align="center" prop="legalPersonIdCard" />
-      <el-table-column label="企业经营状态" align="center" prop="operationStatus" />
+      <el-table-column label="企业经营状态" align="center" prop="operationStatus" :formatter="operationStatusFormatter" />
       <el-table-column label="注册资本" align="center" prop="regCapital" />
       <el-table-column label="企业地址" align="center" prop="address" />
 <!--      <el-table-column label="企业简介" align="center" prop="about" />-->
       <el-table-column label="种植面积(亩)" align="center" prop="cultivatedArea" />
       <el-table-column label="从业人员数量" align="center" prop="workPersonNum" />
+      <el-table-column label="所属区域" align="center" prop="region" />
       <!--<el-table-column label="年销量(斤)" align="center" prop="yearSales" />
       <el-table-column label="年产量(斤)" align="center" prop="yearOutput" />-->
       <el-table-column label="茶种类" align="center" prop="teaType" :formatter="teaTypeFormatter" />
@@ -121,7 +131,11 @@
         </el-form-item>
         <el-form-item label="主体类型" prop="type">
           <el-select style="width: 240px" v-model="form.type" placeholder="请选择主体类型">
-            <el-option label="请选择字典生成" value="" />
+            <el-option
+              v-for="dictIndex in zhutiTypeOptions"
+              :key="dictIndex.dictValue"
+              :label="dictIndex.dictLabel"
+              :value="dictIndex.dictValue" />
           </el-select>
         </el-form-item>
         <el-form-item label="企业性质" prop="nature">
@@ -142,12 +156,12 @@
           <el-input style="width: 240px" v-model="form.legalPersonIdCard" placeholder="请输入法人身份证" />
         </el-form-item>
         <el-form-item label="企业经营状态">
-          <el-select style="width: 240px" v-model="form.operationStatus" placeholder="请选择主体类型">
+          <el-select style="width: 240px" v-model.number="form.operationStatus" placeholder="请选择主体类型">
             <el-option
               v-for="dictIndex in operationStatusOptions"
               :key="dictIndex.dictValue"
               :label="dictIndex.dictLabel"
-              :value="dictIndex.dictValue" />
+              :value="parseInt(dictIndex.dictValue)" />
           </el-select>
         </el-form-item>
         <el-form-item label="注册资本" prop="regCapital">
@@ -165,8 +179,18 @@
         <el-form-item label="从业人员数量" prop="workPersonNum">
           <el-input style="width: 240px" v-model="form.workPersonNum" placeholder="请输入从业人员数量" />
         </el-form-item>
+        <el-form-item label="所属区域" prop="region">
+          <el-select style="width: 240px" v-model="form.region" placeholder="请选择所属区域">
+            <el-option
+              v-for="dictIndex in regionOptions"
+              :key="dictIndex.dictValue"
+              :label="dictIndex.dictLabel"
+              :value="dictIndex.dictValue" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="茶种类" prop="teaType">
           <el-select
+            style="width: 240px"
             v-model="form.teaType"
             multiple
             filterable
@@ -219,6 +243,8 @@ export default {
       total: 0,
       // 茶企基本信息表格数据
       teaEnterpriseInfoList: [],
+      regionOptions: [], //区域选项
+      zhutiTypeOptions: [], //主体类型
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -240,7 +266,8 @@ export default {
         cultivatedArea: null,
         workPersonNum: null,
         yearSales: null,
-        yearOutput: null
+        yearOutput: null,
+        region: null
       },
       // 表单参数
       form: {},
@@ -248,6 +275,9 @@ export default {
       teaTypeOptions: [], //茶种类选项
       // 表单校验
       rules: {
+        region: [
+          { required: true, message: "所属区域不能为空", trigger: "change" }
+        ]
       }
     };
   },
@@ -257,6 +287,12 @@ export default {
     });
     this.getDicts('sys_tea_type').then((response) => {
       this.teaTypeOptions = response.data;
+    });
+    this.getDicts('sys_region').then((response) => {
+      this.regionOptions = response.data;
+    });
+    this.getDicts('sys_zhuti_type').then((response) => {
+      this.zhutiTypeOptions = response.data;
     });
     this.getList();
 
@@ -291,6 +327,7 @@ export default {
         address: null,
         cultivatedArea: null,
         workPersonNum: null,
+        region: null,
         teaType: []
       };
       this.resetForm("form");
@@ -394,6 +431,14 @@ export default {
         });
       });
       return result;
+    },
+    //主体类型格式化
+    zhutiTypeFormatter(row,column,value){
+      return this.selectDictLabel(this.zhutiTypeOptions, value);
+    },
+    //经营状态格式化
+    operationStatusFormatter(row,column,value){
+      return this.selectDictLabel(this.operationStatusOptions, value);
     }
   }
 };

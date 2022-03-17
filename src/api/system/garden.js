@@ -9,6 +9,14 @@ export function listGarden(query) {
   })
 }
 
+export function listAll(query) {
+  return request({
+    url: '/system/garden/listAll',
+    method: 'get',
+    params: query
+  })
+}
+
 
 export function listTeaGarden(query) {
   return request({
