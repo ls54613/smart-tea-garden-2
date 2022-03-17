@@ -9,6 +9,15 @@ export function listTeaEnterpriseInfo(query) {
   })
 }
 
+// 查询全部茶企基本信息列表
+export function listTeaEnterpriseInfoAll(query) {
+  return request({
+    url: '/system/teaEnterpriseInfo/findAll',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询茶企基本信息详细
 export function getTeaEnterpriseInfo(id) {
   return request({
