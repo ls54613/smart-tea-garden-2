@@ -112,13 +112,13 @@
     />
 
     <!-- 添加或修改茶仓基本情况对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+    <el-dialog :center="true" :title="title" :visible.sync="open" width="800px" append-to-body>
+      <el-form :inline="true" ref="form" :model="form" :rules="rules" label-width="120px">
         <el-form-item label="茶仓名称" prop="warehouseName">
-          <el-input v-model="form.warehouseName" placeholder="请输入茶仓名称" />
+          <el-input style="width: 220px;" v-model="form.warehouseName" placeholder="请输入茶仓名称" />
         </el-form-item>
         <el-form-item label="关联企业单位" prop="enterpriseId">
-          <el-select v-model="form.enterpriseId" filterable placeholder="请选择关联企业单位">
+          <el-select style="width: 220px;" v-model="form.enterpriseId" filterable placeholder="请选择关联企业单位">
             <el-option
               v-for="item in enterpriseInfoList"
               :key="item.id"
@@ -128,25 +128,25 @@
           </el-select>
         </el-form-item>
         <el-form-item label="茶仓面积" prop="measure">
-          <el-input v-model="form.measure" placeholder="请输入茶仓面积" />
+          <el-input style="width: 220px;" v-model="form.measure" placeholder="请输入茶仓面积" />
         </el-form-item>
         <el-form-item label="茶仓容量" prop="capacity">
-          <el-input v-model="form.capacity" placeholder="请输入茶仓容量" />
+          <el-input style="width: 220px;" v-model="form.capacity" placeholder="请输入茶仓容量" />
         </el-form-item>
         <el-form-item label="设施数量" prop="facilitiesNumber">
-          <el-input v-model="form.facilitiesNumber" placeholder="请输入设施数量" />
+          <el-input style="width: 220px;" v-model="form.facilitiesNumber" placeholder="请输入设施数量" />
         </el-form-item>
         <el-form-item label="利用率" prop="utilization">
-          <el-input v-model="form.utilization" placeholder="请输入利用率" />
+          <el-input style="width: 220px;" v-model="form.utilization" placeholder="请输入利用率" />
         </el-form-item>
         <el-form-item label="负责人" prop="personCharge">
-          <el-input v-model="form.personCharge" placeholder="请输入负责人" />
+          <el-input style="width: 220px;" v-model="form.personCharge" placeholder="请输入负责人" />
         </el-form-item>
         <el-form-item label="现存量" prop="quantity">
-          <el-input v-model="form.quantity" placeholder="请输入现存量" />
+          <el-input style="width: 220px;" v-model="form.quantity" placeholder="请输入现存量" />
         </el-form-item>
         <el-form-item label="出库总量" prop="outboundVolume">
-          <el-input v-model="form.outboundVolume" placeholder="请输入出库总量" />
+          <el-input style="width: 220px;" v-model="form.outboundVolume" placeholder="请输入出库总量" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -229,6 +229,7 @@ export default {
     reset() {
       this.form = {
         id: null,
+        warehouseName: '',
         enterpriseId: null,
         measure: null,
         capacity: null,
