@@ -67,6 +67,7 @@
     <el-table v-loading="loading" :data="TeaWarehouseEssentialList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="茶仓id" align="center" prop="id" />
+      <el-table-column label="茶仓名称" align="center" prop="warehouseName" />
       <el-table-column label="关联企业单位" align="center" prop="enterpriseId" :formatter="enterpriseFormatter" />
       <el-table-column label="茶仓面积" align="center" prop="measure" />
       <el-table-column label="茶仓容量" align="center" prop="capacity" />
@@ -75,7 +76,7 @@
       <el-table-column label="负责人" align="center" prop="personCharge" />
       <el-table-column label="现存量" align="center" prop="quantity" />
       <el-table-column label="出库总量" align="center" prop="outboundVolume" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -91,6 +92,13 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:TeaWarehouseEssential:remove']"
           >删除</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-menu"
+            @click="handleTeaWarehouseDetails(scope.row)"
+            v-hasPermi="['system:teaWarehouseDetails:list']"
+          >仓位详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -106,6 +114,9 @@
     <!-- 添加或修改茶仓基本情况对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+        <el-form-item label="茶仓名称" prop="warehouseName">
+          <el-input v-model="form.warehouseName" placeholder="请输入茶仓名称" />
+        </el-form-item>
         <el-form-item label="关联企业单位" prop="enterpriseId">
           <el-select v-model="form.enterpriseId" filterable placeholder="请选择关联企业单位">
             <el-option
@@ -186,6 +197,9 @@ export default {
       rules: {
         enterpriseId: [
           { required: true, message: "关联企业单位不能为空", trigger: "change" }
+        ],
+        warehouseName: [
+          { required: true, message: "名称不能为空", trigger: "change" }
         ],
       }
     };
@@ -317,6 +331,15 @@ export default {
         }
       });
       return enterpriseName;
+    },
+    //查看仓位详细
+    handleTeaWarehouseDetails(row){
+      this.$router.push({
+        path: 'teaWarehouseDetails',
+        query: {
+          id: row.id
+        }
+      });
     }
   }
 };

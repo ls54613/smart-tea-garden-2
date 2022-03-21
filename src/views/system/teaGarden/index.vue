@@ -244,10 +244,10 @@ export default {
     };
   },
   created() {
-      this.getDicts('sys_tea_type').then((response) => {
+    this.getDicts('sys_tea_type').then((response) => {
       this.operationStatusVariety = response.data;
     });
-      this.getDicts('sys_enterprise_type').then((response) => {
+    this.getDicts('sys_enterprise_type').then((response) => {
       this.operationStatusEnterprise = response.data;
     });
     this.getDicts('sys_region').then((response) => {

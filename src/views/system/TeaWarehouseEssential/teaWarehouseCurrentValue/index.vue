@@ -1,6 +1,16 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+      <el-form-item label="关联茶仓" prop="teaWarehouseId">
+        <el-select v-model="queryParams.teaWarehouseId" placeholder="请选择关联茶仓" clearable size="small">
+          <el-option
+            v-for="item in teaWarehouseList"
+            :key="'teaWarehouse' + item.id"
+            :label="item.warehouseName"
+            :value="item.id"
+          ></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -15,7 +25,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:teaWarehouseDetails:add']"
+          v-hasPermi="['system:teaWarehouseCurrentValue:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -26,7 +36,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['system:teaWarehouseDetails:edit']"
+          v-hasPermi="['system:teaWarehouseCurrentValue:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -37,7 +47,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['system:teaWarehouseDetails:remove']"
+          v-hasPermi="['system:teaWarehouseCurrentValue:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -48,18 +58,19 @@
           size="mini"
 		  :loading="exportLoading"
           @click="handleExport"
-          v-hasPermi="['system:teaWarehouseDetails:export']"
+          v-hasPermi="['system:teaWarehouseCurrentValue:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="teaWarehouseDetailsList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="teaWarehouseCurrentValueList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
-      <el-table-column label="占地面积" align="center" prop="areaCovered" />
-      <el-table-column label="库存总量" align="center" prop="totalInventory" />
-      <el-table-column label="出库总量" align="center" prop="totalOutbound" />
+      <el-table-column label="品种" align="center" prop="varieties" :formatter="varietiesFormat" />
+      <el-table-column label="当前库存量(吨)" align="center" prop="currentInventory" />
+      <el-table-column label="货值(万元)" align="center" prop="goodsValue" />
+      <el-table-column label="库存预警量" align="center" prop="inventoryWarningQuantity" />
       <el-table-column label="关联茶仓" align="center" prop="teaWarehouseId" :formatter="teaWarehouseFormatter" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -68,14 +79,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:teaWarehouseDetails:edit']"
+            v-hasPermi="['system:teaWarehouseCurrentValue:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:teaWarehouseDetails:remove']"
+            v-hasPermi="['system:teaWarehouseCurrentValue:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -89,20 +100,27 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改仓位详情对话框 -->
+    <!-- 添加或修改库存情况货值分布对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="占地面积" prop="areaCovered">
-          <el-input v-model="form.areaCovered" placeholder="请输入占地面积" />
+      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+        <el-form-item label="品种" prop="varieties">
+          <el-input style="width: 220px" v-model="form.varieties" placeholder="请输入品种" />
         </el-form-item>
-        <el-form-item label="库存总量" prop="totalInventory">
-          <el-input v-model="form.totalInventory" placeholder="请输入库存总量" />
+        <el-form-item label="当前库存量(吨)" prop="currentInventory">
+          <el-input style="width: 220px" v-model="form.currentInventory" placeholder="请输入当前库存量(吨)">
+            <template slot="append">吨</template>
+          </el-input>
         </el-form-item>
-        <el-form-item label="出库总量" prop="totalOutbound">
-          <el-input v-model="form.totalOutbound" placeholder="请输入出库总量" />
+        <el-form-item label="货值(万元)" prop="goodsValue">
+          <el-input style="width: 220px" v-model="form.goodsValue" placeholder="请输入货值(万元)">
+            <template slot="append">万元</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="库存预警量" prop="inventoryWarningQuantity">
+          <el-input style="width: 220px" v-model="form.inventoryWarningQuantity" placeholder="请输入库存预警量" />
         </el-form-item>
         <el-form-item label="关联茶仓" prop="teaWarehouseId">
-          <el-select disabled v-model="form.teaWarehouseId" placeholder="请选择关联茶仓">
+          <el-select style="width: 220px" v-model="form.teaWarehouseId" placeholder="关联茶仓">
             <el-option
               v-for="item in teaWarehouseList"
               :key="'teaWarehouse_' + item.id"
@@ -121,10 +139,10 @@
 </template>
 
 <script>
-import { listTeaWarehouseDetails, getTeaWarehouseDetails, delTeaWarehouseDetails, addTeaWarehouseDetails, updateTeaWarehouseDetails, exportTeaWarehouseDetails } from "@/api/system/teaWarehouseDetails";
+import { listTeaWarehouseCurrentValue, getTeaWarehouseCurrentValue, delTeaWarehouseCurrentValue, addTeaWarehouseCurrentValue, updateTeaWarehouseCurrentValue, exportTeaWarehouseCurrentValue } from "@/api/system/teaWarehouseCurrentValue";
 import { findAllTeaWarehouse } from '@/api/system/TeaWarehouseEssential'
 export default {
-  name: "TeaWarehouseDetails",
+  name: "TeaWarehouseCurrentValue",
   data() {
     return {
       // 遮罩层
@@ -141,50 +159,62 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 仓位详情表格数据
-      teaWarehouseDetailsList: [],
+      // 库存情况货值分布表格数据
+      teaWarehouseCurrentValueList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
       open: false,
+      // 品种字典
+      varietiesOptions: [],
+      teaWarehouseList: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        teaWarehouseId: null
       },
       // 表单参数
       form: {},
-      teaWarehouseList: [],
-      teaWarehouseId: null,
       // 表单校验
       rules: {
+        varieties: [
+          { required: true, message: "品种不能为空", trigger: "blur" }
+        ],
         teaWarehouseId: [
-          { required: true, message: "关联茶仓基本信息id不能为空", trigger: "change" }
-        ]
+          { required: true, message: "关联茶企不能为空", trigger: "change" }
+        ],
+        currentInventory: [
+          { required: true, message: "当前库存量不能为空", trigger: "change" }
+        ],
+        goodsValue: [
+          { required: true, message: "货值不能为空", trigger: "change" }
+        ],
       }
     };
   },
   created() {
-    let teaWarehouseId = this.$route.query.id;
-    if(teaWarehouseId){
-      this.teaWarehouseId = teaWarehouseId;
-      this.queryParams.teaWarehouseId = teaWarehouseId;
-      this.form.teaWarehouseId = teaWarehouseId;
-      findAllTeaWarehouse().then(res => {
-        this.teaWarehouseList = res.data;
-      });
-      this.getList();
-    }
+    findAllTeaWarehouse().then(res => {
+      this.teaWarehouseList = res.data;
+    });
+    this.getList();
+    this.getDicts("sys_tea_type").then(response => {
+      this.varietiesOptions = response.data;
+    });
   },
   methods: {
-    /** 查询仓位详情列表 */
+    /** 查询库存情况货值分布列表 */
     getList() {
       this.loading = true;
-      listTeaWarehouseDetails(this.queryParams).then(response => {
-        this.teaWarehouseDetailsList = response.rows;
+      listTeaWarehouseCurrentValue(this.queryParams).then(response => {
+        this.teaWarehouseCurrentValueList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
+    },
+    // 品种字典翻译
+    varietiesFormat(row, column) {
+      return this.selectDictLabel(this.varietiesOptions, row.varieties);
     },
     // 取消按钮
     cancel() {
@@ -195,10 +225,11 @@ export default {
     reset() {
       this.form = {
         id: null,
-        areaCovered: null,
-        totalInventory: null,
-        totalOutbound: null,
-        teaWarehouseId: parseInt(this.teaWarehouseId)
+        varieties: null,
+        currentInventory: null,
+        goodsValue: null,
+        inventoryWarningQuantity: null,
+        teaWarehouseId: null
       };
       this.resetForm("form");
     },
@@ -222,16 +253,16 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加仓位详情";
+      this.title = "添加库存情况货值分布";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
-      getTeaWarehouseDetails(id).then(response => {
+      getTeaWarehouseCurrentValue(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改仓位详情";
+        this.title = "修改库存情况货值分布";
       });
     },
     /** 提交按钮 */
@@ -239,13 +270,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
-            updateTeaWarehouseDetails(this.form).then(response => {
+            updateTeaWarehouseCurrentValue(this.form).then(response => {
               this.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addTeaWarehouseDetails(this.form).then(response => {
+            addTeaWarehouseCurrentValue(this.form).then(response => {
               this.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -257,12 +288,12 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除仓位详情编号为"' + ids + '"的数据项?', "警告", {
+      this.$confirm('是否确认删除库存情况货值分布编号为"' + ids + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(function() {
-          return delTeaWarehouseDetails(ids);
+          return delTeaWarehouseCurrentValue(ids);
         }).then(() => {
           this.getList();
           this.msgSuccess("删除成功");
@@ -271,13 +302,13 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有仓位详情数据项?', "警告", {
+      this.$confirm('是否确认导出所有库存情况货值分布数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
           this.exportLoading = true;
-          return exportTeaWarehouseDetails(queryParams);
+          return exportTeaWarehouseCurrentValue(queryParams);
         }).then(response => {
           this.download(response.msg);
           this.exportLoading = false;
