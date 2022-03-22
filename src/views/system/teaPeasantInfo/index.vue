@@ -27,100 +27,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-<<<<<<< HEAD
-      <el-form-item label="茶农性别" prop="sex">
-        <el-select v-model="queryParams.sex" placeholder="请选择茶农性别" clearable size="small">
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="茶农年龄" prop="age">
-        <el-input
-          v-model="queryParams.age"
-          placeholder="请输入茶农年龄"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="茶农民族" prop="nation">
-        <el-input
-          v-model="queryParams.nation"
-          placeholder="请输入茶农民族"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="政治面貌" prop="politicsStatus">
-        <el-select v-model="queryParams.politicsStatus" placeholder="请选择政治面貌" clearable size="small">
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="联系方式" prop="mobile">
-        <el-input
-          v-model="queryParams.mobile"
-          placeholder="请输入联系方式"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="茶农技能" prop="skill">
-        <el-input
-          v-model="queryParams.skill"
-          placeholder="请输入茶农技能"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="茶农职业" prop="job">
-        <el-input
-          v-model="queryParams.job"
-          placeholder="请输入茶农职业"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="信誉等级" prop="creditLevel">
-        <el-input
-          v-model="queryParams.creditLevel"
-          placeholder="请输入信誉等级1=极差2=中等3=良好4=优秀5=极好"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="学历" prop="education">
-        <el-input
-          v-model="queryParams.education"
-          placeholder="请输入学历"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="照片" prop="pic">
-        <el-input
-          v-model="queryParams.pic"
-          placeholder="请输入照片"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="家庭住址" prop="homeAddress">
-        <el-input
-          v-model="queryParams.homeAddress"
-          placeholder="请输入家庭住址"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-=======
->>>>>>> f91633ec7eb4a1729d87b4a16de7a6f7b6138094
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -188,25 +94,15 @@
       </el-table-column>
       <el-table-column label="所属企业" align="center" prop="enterpriseId" :formatter="enterpriseFormatter" />
       <el-table-column label="茶农姓名" align="center" prop="personName" />
-<<<<<<< HEAD
-      <el-table-column label="茶农性别" align="center" prop="sex" />
-=======
       <el-table-column label="茶农性别" align="center" prop="sex" :formatter="sexFormatter" />
->>>>>>> f91633ec7eb4a1729d87b4a16de7a6f7b6138094
       <el-table-column label="茶农年龄" align="center" prop="age" />
       <el-table-column label="茶农民族" align="center" prop="nation" />
       <el-table-column label="政治面貌" align="center" prop="politicsStatus" :formatter="politicsStatusFormatter" />
       <el-table-column label="联系方式" align="center" prop="mobile" />
       <el-table-column label="茶农技能" align="center" prop="skill" />
       <el-table-column label="茶农职业" align="center" prop="job" />
-<<<<<<< HEAD
-      <el-table-column label="信誉等级" align="center" prop="creditLevel" />
-      <el-table-column label="学历" align="center" prop="education" />
-      <el-table-column label="照片" align="center" prop="pic" />
-=======
       <el-table-column label="信誉等级" align="center" prop="creditLevel" :formatter="creditLevelFormatter" />
       <el-table-column label="学历" align="center" prop="education" :formatter="educationFormatter" />
->>>>>>> f91633ec7eb4a1729d87b4a16de7a6f7b6138094
       <el-table-column label="家庭住址" align="center" prop="homeAddress" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
