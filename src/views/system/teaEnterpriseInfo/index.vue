@@ -205,10 +205,15 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <!--<el-form-item label="年销量(斤)" prop="yearSales">
-          <el-input v-model="form.yearSales" placeholder="请输入年销量" />
+        <el-form-item label="所属部门" prop="deptId">
+          <treeselect
+            v-model="form.deptId"
+            :multiple="false"
+            placeholder="请选择部门"
+            :options="deptOptions"
+          />
         </el-form-item>
-        <el-form-item label="年产量(斤)" prop="yearOutput">
+        <!--<el-form-item label="年产量(斤)" prop="yearOutput">
           <el-input v-model="form.yearOutput" placeholder="请输入年产量" />
         </el-form-item>-->
       </el-form>
@@ -222,9 +227,13 @@
 
 <script>
 import { listTeaEnterpriseInfo, getTeaEnterpriseInfo, delTeaEnterpriseInfo, addTeaEnterpriseInfo, updateTeaEnterpriseInfo, exportTeaEnterpriseInfo } from "@/api/system/teaEnterpriseInfo";
-
+import Treeselect from '@riophae/vue-treeselect'
+// import the styles
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import { treeselect } from '@/api/system/dept'
 export default {
   name: "TeaEnterpriseInfo",
+  components: { Treeselect },
   data() {
     return {
       // 遮罩层
@@ -273,6 +282,7 @@ export default {
       form: {},
       operationStatusOptions: [], //茶企经营状态字典
       teaTypeOptions: [], //茶种类选项
+      deptOptions: [],
       // 表单校验
       rules: {
         region: [
@@ -293,6 +303,9 @@ export default {
     });
     this.getDicts('sys_zhuti_type').then((response) => {
       this.zhutiTypeOptions = response.data;
+    });
+    treeselect().then((res) => {
+      this.deptOptions = res.data
     });
     this.getList();
 
@@ -328,7 +341,8 @@ export default {
         cultivatedArea: null,
         workPersonNum: null,
         region: null,
-        teaType: []
+        teaType: [],
+        deptId: null
       };
       this.resetForm("form");
     },
