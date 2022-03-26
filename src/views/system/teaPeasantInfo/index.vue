@@ -218,9 +218,6 @@
           >
             <i class="el-icon-plus"></i>
           </el-upload>
-          <el-dialog v-model="dialogVisible">
-            <img width="100%" :src="form.imgBase64" alt />
-          </el-dialog>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -374,9 +371,17 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const id = row.id || this.ids;
-      getTeaPeasantInfo(id).then(response => {
+      this.picList = []
+      this.from = row
+     // const id = row.id || this.ids;
+      getTeaPeasantInfo(row.id).then(response => {
         this.form = response.data;
+        let result = this.handleOssUrl(this.form.pic);
+        this.picList.push({name: result, url: result});
+        console.log(this.picList)
+        // console.log("修改茶农基本信息");
+        // console.log(response.data)
+        // console.log(this.form);
         this.open = true;
         this.title = "修改茶农基本信息";
       });

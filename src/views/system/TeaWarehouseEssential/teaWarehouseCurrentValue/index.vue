@@ -104,7 +104,14 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-form-item label="品种" prop="varieties">
-          <el-input style="width: 220px" v-model="form.varieties" placeholder="请输入品种" />
+          <el-select style="width: 220px" v-model="form.varieties" placeholder="选择品种">
+            <el-option
+              v-for="item in varietiesOptions"
+              :key="item.dictValue"
+              :label="item.dictLabel"
+              :value="item.dictValue"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="当前库存量(吨)" prop="currentInventory">
           <el-input style="width: 220px" v-model="form.currentInventory" placeholder="请输入当前库存量(吨)">
@@ -123,7 +130,7 @@
           <el-select style="width: 220px" v-model="form.teaWarehouseId" placeholder="关联茶仓">
             <el-option
               v-for="item in teaWarehouseList"
-              :key="'teaWarehouse_' + item.id"
+              :key="item.id"
               :label="item.warehouseName"
               :value="item.id"
             ></el-option>
@@ -200,6 +207,7 @@ export default {
     this.getList();
     this.getDicts("sys_tea_type").then(response => {
       this.varietiesOptions = response.data;
+      // console.log(this.varietiesOptions)
     });
   },
   methods: {
