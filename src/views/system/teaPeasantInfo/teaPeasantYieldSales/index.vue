@@ -122,22 +122,22 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="产量(斤)" prop="yieldValueNumber">
-          <el-input oninput="value=value.replace(/[^\d.]/g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3').replace(/^\./g, '')" v-model="form.yieldValueNumber" placeholder="请输入产量(斤)">
+          <el-input style="width: 220px" oninput="value=value.replace(/[^\d.]/g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3').replace(/^\./g, '')" v-model="form.yieldValueNumber" placeholder="请输入产量(斤)">
             <template slot="append">斤</template>
           </el-input>
         </el-form-item>
         <el-form-item label="产值(万元)" prop="yieldValueMoney">
-          <el-input oninput="value=value.replace(/[^\d.]/g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3').replace(/^\./g, '')" v-model="form.yieldValueMoney" placeholder="产值(万元)">
+          <el-input style="width: 220px" oninput="value=value.replace(/[^\d.]/g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3').replace(/^\./g, '')" v-model="form.yieldValueMoney" placeholder="产值(万元)">
             <template slot="append">万元</template>
           </el-input>
         </el-form-item>
         <el-form-item label="销量(斤)" prop="salesVolumeNumber">
-          <el-input oninput="value=value.replace(/[^\d.]/g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3').replace(/^\./g, '')" v-model="form.salesVolumeNumber" placeholder="请输入销量(斤)">
+          <el-input style="width: 220px" oninput="value=value.replace(/[^\d.]/g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3').replace(/^\./g, '')" v-model="form.salesVolumeNumber" placeholder="请输入销量(斤)">
             <template slot="append">斤</template>
           </el-input>
         </el-form-item>
         <el-form-item label="销售额(万元)" prop="salesVolumeMoney">
-          <el-input oninput="value=value.replace(/[^\d.]/g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3').replace(/^\./g, '')" v-model="form.salesVolumeMoney" placeholder="请输入销售额(万元)">
+          <el-input style="width: 220px" oninput="value=value.replace(/[^\d.]/g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3').replace(/^\./g, '')" v-model="form.salesVolumeMoney" placeholder="请输入销售额(万元)">
             <template slot="append">万元</template>
           </el-input>
         </el-form-item>

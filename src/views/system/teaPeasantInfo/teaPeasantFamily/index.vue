@@ -131,8 +131,8 @@
     <!-- 添加或修改茶农家庭成员对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="成员姓名" prop="familyName">
-          <el-input v-model="form.familyName" placeholder="请输入成员姓名" />
+        <el-form-item  label="成员姓名" prop="familyName">
+          <el-input style="width: 220px" v-model="form.familyName" placeholder="请输入成员姓名" />
         </el-form-item>
         <el-form-item label="性别" prop="familySex">
           <el-select style="width: 220px" v-model.number="form.familySex" placeholder="请选择茶农性别">
@@ -144,7 +144,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="关系" prop="relationship">
-          <el-input v-model="form.relationship" placeholder="请输入关系" />
+          <el-input style="width: 220px" v-model="form.relationship" placeholder="请输入关系" />
         </el-form-item>
         <el-form-item label="证件类型" prop="cardType">
           <el-select v-model="form.cardType" placeholder="请选择证件类型">
@@ -156,7 +156,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="证件号" prop="idCard">
-          <el-input v-model="form.idCard" placeholder="请输入证件号" />
+          <el-input style="width: 220px" v-model="form.idCard" placeholder="请输入证件号" />
         </el-form-item>
         <el-form-item label="关联茶农id" prop="teaPeasantId">
           <el-select v-model="form.teaPeasantId" placeholder="请输入关联茶农">
@@ -249,6 +249,8 @@ export default {
     getList() {
       this.loading = true;
       listTeaPeasantFamily(this.queryParams).then(response => {
+        //this.teaPeasantFamilyList.idCard=response.rows;
+        // console.log(response.rows)
         this.teaPeasantFamilyList = response.rows;
         this.total = response.total;
         this.loading = false;

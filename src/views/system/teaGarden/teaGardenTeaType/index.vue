@@ -117,14 +117,14 @@
 <!--            </el-form-item>-->
 <!--          </el-form>-->
 
-<!--          <el-select disabled v-model="form.teaGardenId" placeholder="请选择关联茶园">-->
-<!--            <el-option-->
-<!--              v-for="item in teaGardenList"-->
-<!--              :key="'teaGarden_' + item.teaGardenId"-->
-<!--              :label="item.name"-->
-<!--              :value="item.teaGardenId"-->
-<!--            ></el-option>-->
-<!--          </el-select>-->
+          <el-select disabled v-model="form.teaGardenId" placeholder="请选择关联茶园">
+            <el-option
+              v-for="item in teaGardenList"
+              :key="'teaGarden_' + item.teaGardenId"
+              :label="item.name"
+              :value="item.teaGardenId"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="茶种类" prop="type">
           <el-select v-model="form.type" placeholder="请选择茶种类">

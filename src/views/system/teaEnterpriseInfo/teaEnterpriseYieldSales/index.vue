@@ -5,7 +5,7 @@
         <el-date-picker clearable size="small"
           v-model="queryParams.year"
           type="year"
-          value-format="yyyy-MM-dd"
+          value-format="yyyy"
           placeholder="选择年度">
         </el-date-picker>
       </el-form-item>
@@ -116,34 +116,49 @@
     <el-dialog :title="title" :center="true" :visible.sync="open" width="800px" append-to-body>
       <el-form ref="form" :inline="true" :model="form" :rules="rules" label-width="140px">
         <el-form-item label="年度" prop="year">
-          <el-date-picker style="width: 200px" clearable size="small"
-            v-model="form.year"
-            type="year"
-            value-format="yyyy"
-            placeholder="选择年度">
-          </el-date-picker>
+         <el-date-picker clearable size="small"
+                         style="width: 200px"
+         v-model="form.year"
+         value-format="yyyy"
+         type="year"
+         placeholder="请选择年份"
+         :disabled="picker">
+         </el-date-picker>
         </el-form-item>
         <el-form-item label="产量(斤)" prop="yieldValueNumber">
-          <el-input style="width: 200px" v-model="form.yieldValueNumber" placeholder="请输入产量(斤)" />
+          <el-input style="width: 200px" v-model="form.yieldValueNumber" placeholder="请输入产量(斤)" >
+            <template slot="append">斤</template>
+          </el-input>
         </el-form-item>
         <el-form-item label="产值金额(万元)" prop="yieldValueMoney">
-          <el-input style="width: 200px" v-model="form.yieldValueMoney" placeholder="请输入产值金额(万元)" />
+          <el-input style="width: 200px" v-model="form.yieldValueMoney" placeholder="请输入产值金额(万元)" >
+            <template slot="append">万元</template>
+          </el-input>
         </el-form-item>
         <el-form-item label="销量(斤)" prop="salesVolumeNumber">
-          <el-input style="width: 200px" v-model="form.salesVolumeNumber" placeholder="请输入销量(斤)" />
+          <el-input style="width: 200px" v-model="form.salesVolumeNumber" placeholder="请输入销量(斤)" >
+            <template slot="append">斤</template>
+          </el-input>
         </el-form-item>
         <el-form-item label="销售额(万元)" prop="salesVolumeMoney">
-          <el-input style="width: 200px" v-model="form.salesVolumeMoney" placeholder="请输入销售额(万元)" />
+          <el-input style="width: 200px" v-model="form.salesVolumeMoney" placeholder="请输入销售额(万元)" >
+            <template slot="append">万元</template>
+          </el-input>
         </el-form-item>
         <el-form-item label="产品成本统计(万元)" prop="productCostStatistics">
-          <el-input style="width: 200px" v-model="form.productCostStatistics" placeholder="请输入产品成本统计(万元)" />
+          <el-input style="width: 200px" v-model="form.productCostStatistics" placeholder="请输入产品成本统计(万元)" >
+            <template slot="append" style="width: 100px">万元</template>
+          </el-input>
         </el-form-item>
         <el-form-item label="产品利润统计(万元)" prop="productProfitStatistics">
-          <el-input style="width: 200px" v-model="form.productProfitStatistics" placeholder="请输入产品利润统计(万元)" />
+          <el-input style="width: 200px" v-model="form.productProfitStatistics" placeholder="请输入产品利润统计(万元)" >
+            <template slot="append">万元</template>
+          </el-input>
         </el-form-item>
         <el-form-item label="关联茶企" prop="teaPeasantId">
-          <el-select v-model="form.teaPeasantId" filterable placeholder="请选择关联茶企">
+          <el-select v-model="form.teaPeasantId" style="width: 200px" filterable placeholder="请选择关联茶企">
             <el-option
+
               v-for="item in enterpriseInfoList"
               :key="item.id"
               :label="item.enterpriseName"
@@ -188,6 +203,8 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      //是否能修改年度
+      picker:false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -261,6 +278,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
+      this.picker = false;
       this.title = "添加企业历年产量及销售情况";
     },
     /** 修改按钮操作 */
@@ -268,8 +286,11 @@ export default {
       this.reset();
       const id = row.id || this.ids
       getTeaEnterpriseYieldSales(id).then(response => {
+        // console.log(response.data);
         this.form = response.data;
+        this.form.year = response.data.year.toString();
         this.open = true;
+        this.picker = true;
         this.title = "修改企业历年产量及销售情况";
       });
     },

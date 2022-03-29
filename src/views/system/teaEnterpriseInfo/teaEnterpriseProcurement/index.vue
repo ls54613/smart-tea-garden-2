@@ -123,10 +123,10 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="采购物品" prop="purchaseGoods">
-          <el-input v-model="form.purchaseGoods" placeholder="请输入采购物品" />
+          <el-input v-model="form.purchaseGoods" style="width: 220px" placeholder="请输入采购物品" />
         </el-form-item>
         <el-form-item label="采购数量" prop="purchaseNumber">
-          <el-input v-model="form.purchaseNumber" placeholder="请输入采购数量" />
+          <el-input v-model="form.purchaseNumber" style="width: 220px" placeholder="请输入采购数量" />
         </el-form-item>
         <el-form-item label="关联茶企" prop="teaEnterpriseId">
           <el-select v-model="form.teaEnterpriseId" filterable placeholder="请选择关联茶企">

@@ -174,7 +174,9 @@
           <el-input v-model="form.about" placeholder="请输入企业简介" />
         </el-form-item>-->
         <el-form-item label="种植面积(亩)" prop="cultivatedArea">
-          <el-input style="width: 240px" v-model="form.cultivatedArea" placeholder="请输入种植面积(亩)" />
+          <el-input style="width: 240px" v-model="form.cultivatedArea" placeholder="请输入种植面积(亩)" >
+            <template slot="append">亩</template>
+          </el-input>
         </el-form-item>
         <el-form-item label="从业人员数量" prop="workPersonNum">
           <el-input style="width: 240px" v-model="form.workPersonNum" placeholder="请输入从业人员数量" />
@@ -207,6 +209,7 @@
         </el-form-item>
         <el-form-item label="所属部门" prop="deptId">
           <treeselect
+            style="width: 240px"
             v-model="form.deptId"
             :multiple="false"
             placeholder="请选择部门"
@@ -291,6 +294,7 @@ export default {
       }
     };
   },
+
   created() {
     this.getDicts('tea_enterprise_operation_status').then((response) => {
       this.operationStatusOptions = response.data;
