@@ -137,7 +137,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="占比(%)" prop="proportion">
-          <el-input v-model="form.proportion" placeholder="请输入占比(%)" />
+          <el-input v-model="form.proportion" type="number" style="width: 216px" placeholder="请输入占比(%)" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -246,8 +246,8 @@ export default {
       this.resetForm("form");
       let id = this.$route.query.id;
       if(id){
-        this.queryParams.teaGardenId = id;
-        this.form.teaGardenId = id;
+        this.queryParams.teaGardenId = parseInt(id);
+        this.form.teaGardenId = parseInt(id);
       }
     },
     /** 搜索按钮操作 */
@@ -269,6 +269,7 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
+      // console.log(this.teaGardenList)
       this.open = true;
       this.title = "添加茶园种植种类占比";
     },
