@@ -1,8 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="年份
-年份" prop="year">
+      <el-form-item label="年份" prop="year">
         <el-input
           v-model="queryParams.year"
           placeholder="请输入年份
@@ -104,28 +103,28 @@
     />
 
     <!-- 添加或修改茶市基本情况表对话框 -->
-    <el-dialog :title="title" :center="true" :visible.sync="open" width="800px" append-to-body>
-      <el-form ref="form" :inline="true" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="年份" style="width: 220px" prop="year">
-          <el-input v-model="form.year" style="width: 220px" placeholder="请输入年份年份" />
+    <el-dialog :title="title" :center="true" :visible.sync="open" width="900px" append-to-body>
+      <el-form ref="form" :inline="true" :model="form" :rules="rules" label-width="180px">
+        <el-form-item label="年份"  prop="year" >
+          <el-input v-model="form.year"  placeholder="请输入年份年份" />
         </el-form-item>
         <el-form-item label="中国茶叶内销总量(万吨)" prop="teaTotalSales">
-          <el-input v-model="form.teaTotalSales" style="width: 220px" placeholder="请输入中国茶叶内销总量" />
+          <el-input v-model="form.teaTotalSales"  placeholder="请输入中国茶叶内销总量" />
         </el-form-item>
         <el-form-item label="中国茶叶线上占比(%)" prop="teaOnlineProportion">
-          <el-input v-model="form.teaOnlineProportion" style="width: 220px" placeholder="请输入中国茶叶线上占比" />
+          <el-input v-model="form.teaOnlineProportion"  placeholder="请输入中国茶叶线上占比" />
         </el-form-item>
         <el-form-item label="中国茶叶线下占比(%)" prop="teaOfflineProportion">
-          <el-input v-model="form.teaOfflineProportion" style="width: 220px" placeholder="请输入中国茶叶线下占比" />
+          <el-input v-model="form.teaOfflineProportion"  placeholder="请输入中国茶叶线下占比" />
         </el-form-item>
         <el-form-item label="中国茶叶人均消费量(千克)" prop="teaCapitaConsumption">
-          <el-input v-model="form.teaCapitaConsumption" style="width: 220px" placeholder="请输入中国茶叶人均消费量" />
+          <el-input v-model="form.teaCapitaConsumption"  placeholder="请输入中国茶叶人均消费量" />
         </el-form-item>
         <el-form-item label="常宁茶叶内销总量(万吨)" prop="teaChangningTotalSales">
-          <el-input v-model="form.teaChangningTotalSales" style="width: 220px" placeholder="请输入常宁茶叶内销总量" />
+          <el-input v-model="form.teaChangningTotalSales"  placeholder="请输入常宁茶叶内销总量" />
         </el-form-item>
         <el-form-item label="常宁茶叶产量(吨)" prop="teaChangningYield">
-          <el-input v-model="form.teaChangningYield" style="width: 220px" placeholder="请输入常宁茶叶产量" />
+          <el-input v-model="form.teaChangningYield"  placeholder="请输入常宁茶叶产量" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

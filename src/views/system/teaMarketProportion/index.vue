@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="50px">
-      <el-form-item label="年份" prop="year">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+      <el-form-item label="茶叶品种" prop="teaType">
         <el-input
-          v-model="queryParams.year"
-          placeholder="请输入年份"
+          v-model="queryParams.teaType"
+          placeholder="请输入茶叶品种"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -24,7 +24,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:teaMarketScale:add']"
+          v-hasPermi="['system:teaMarketProportion:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -35,7 +35,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['system:teaMarketScale:edit']"
+          v-hasPermi="['system:teaMarketProportion:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -46,7 +46,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['system:teaMarketScale:remove']"
+          v-hasPermi="['system:teaMarketProportion:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -57,19 +57,17 @@
           size="mini"
 		  :loading="exportLoading"
           @click="handleExport"
-          v-hasPermi="['system:teaMarketScale:export']"
+          v-hasPermi="['system:teaMarketProportion:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="teaMarketScaleList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="teaMarketProportionList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="编号" align="center" prop="id" />
-      <el-table-column label="年份" align="center" prop="year" />
-      <el-table-column label="茶叶线上市场规模" align="center" prop="teaMarketSize" />
-      <el-table-column label="茶叶增长率(%)" align="center" prop="teaGrowthRate" />
-
+      <el-table-column label="茶叶品种" align="center" prop="teaType" />
+      <el-table-column label="占比情况(%)" align="center" prop="proportion" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -77,14 +75,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:teaMarketScale:edit']"
+            v-hasPermi="['system:teaMarketProportion:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:teaMarketScale:remove']"
+            v-hasPermi="['system:teaMarketProportion:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -98,19 +96,15 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改中国茶叶线上销售规模监测数据对话框 -->
+    <!-- 添加或修改2021年各品种产量占比情况对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="130px">
-        <el-form-item label="年份" prop="year">
-          <el-input v-model="form.year" placeholder="请输入年份" />
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-form-item label="茶叶品种" prop="teaType">
+          <el-input v-model="form.teaType" placeholder="请选择茶叶品种" />
         </el-form-item>
-        <el-form-item label="茶叶线上市场规模" prop="teaMarketSize">
-          <el-input v-model="form.teaMarketSize" placeholder="请输入茶叶线上市场规模" />
+        <el-form-item label="占比情况(%)" prop="proportion">
+          <el-input v-model="form.proportion" placeholder="请输入占比情况" />
         </el-form-item>
-        <el-form-item label="茶叶增长率(%)" prop="teaGrowthRate">
-          <el-input v-model="form.teaGrowthRate" placeholder="请输入茶叶增长率" />
-        </el-form-item>
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -121,10 +115,10 @@
 </template>
 
 <script>
-import { listTeaMarketScale, getTeaMarketScale, delTeaMarketScale, addTeaMarketScale, updateTeaMarketScale, exportTeaMarketScale } from "@/api/system/teaMarketScale";
+import { listTeaMarketProportion, getTeaMarketProportion, delTeaMarketProportion, addTeaMarketProportion, updateTeaMarketProportion, exportTeaMarketProportion } from "@/api/system/teaMarketProportion";
 
 export default {
-  name: "TeaMarketScale",
+  name: "TeaMarketProportion",
   data() {
     return {
       // 遮罩层
@@ -141,8 +135,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 中国茶叶线上销售规模监测数据表格数据
-      teaMarketScaleList: [],
+      // 2021年各品种产量占比情况表格数据
+      teaMarketProportionList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -151,17 +145,16 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        teaMarketSize: null,
-        teaGrowthRate: null,
-        year: null
+        teaType: null,
+        proportion: null
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        year: [
-          { required: true, message: "年份不能为空", trigger: "blur" }
-        ]
+        teaType: [
+          { required: true, message: "茶叶品种不能为空", trigger: "change" }
+        ],
       }
     };
   },
@@ -169,11 +162,11 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询中国茶叶线上销售规模监测数据列表 */
+    /** 查询2021年各品种产量占比情况列表 */
     getList() {
       this.loading = true;
-      listTeaMarketScale(this.queryParams).then(response => {
-        this.teaMarketScaleList = response.rows;
+      listTeaMarketProportion(this.queryParams).then(response => {
+        this.teaMarketProportionList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -187,9 +180,8 @@ export default {
     reset() {
       this.form = {
         id: null,
-        teaMarketSize: null,
-        teaGrowthRate: null,
-        year: null
+        teaType: null,
+        proportion: null
       };
       this.resetForm("form");
     },
@@ -213,16 +205,16 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加中国茶叶线上销售规模监测数据";
+      this.title = "添加2021年各品种产量占比情况";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
-      getTeaMarketScale(id).then(response => {
+      getTeaMarketProportion(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改中国茶叶线上销售规模监测数据";
+        this.title = "修改2021年各品种产量占比情况";
       });
     },
     /** 提交按钮 */
@@ -230,13 +222,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
-            updateTeaMarketScale(this.form).then(response => {
+            updateTeaMarketProportion(this.form).then(response => {
               this.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addTeaMarketScale(this.form).then(response => {
+            addTeaMarketProportion(this.form).then(response => {
               this.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -248,12 +240,12 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除中国茶叶线上销售规模监测数据编号为"' + ids + '"的数据项?', "警告", {
+      this.$confirm('是否确认删除2021年各品种产量占比情况编号为"' + ids + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(function() {
-          return delTeaMarketScale(ids);
+          return delTeaMarketProportion(ids);
         }).then(() => {
           this.getList();
           this.msgSuccess("删除成功");
@@ -262,13 +254,13 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有中国茶叶线上销售规模监测数据数据项?', "警告", {
+      this.$confirm('是否确认导出所有2021年各品种产量占比情况数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
           this.exportLoading = true;
-          return exportTeaMarketScale(queryParams);
+          return exportTeaMarketProportion(queryParams);
         }).then(response => {
           this.download(response.msg);
           this.exportLoading = false;
