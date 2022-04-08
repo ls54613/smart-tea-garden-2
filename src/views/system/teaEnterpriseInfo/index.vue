@@ -207,6 +207,7 @@
         </el-form-item>
         <el-form-item label="所属部门" prop="deptId">
           <treeselect
+            style="width: 240px"
             v-model="form.deptId"
             :multiple="false"
             placeholder="请选择部门"
@@ -287,6 +288,9 @@ export default {
       rules: {
         region: [
           { required: true, message: "所属区域不能为空", trigger: "change" }
+        ],
+        deptId: [
+          { required: true, message: "所属部门不能为空", trigger: "change" }
         ]
       }
     };
