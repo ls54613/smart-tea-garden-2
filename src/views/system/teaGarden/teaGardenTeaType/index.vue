@@ -76,7 +76,7 @@
     <el-table v-loading="loading" :data="teaGardenTeaTypeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
-      <el-table-column label="关联茶园ID" align="center" prop="teaGardenId" />
+      <el-table-column label="关联茶园" align="center" prop="teaGardenId" :formatter="teaGardenFormatter" />
       <el-table-column label="茶种类" align="center" prop="type" :formatter="typeFormat" />
       <el-table-column label="占比(%)" align="center" prop="proportion" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -111,7 +111,20 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="关联茶园" prop="teaGardenId">
-          <el-input v-model="form.teaGardenId" readonly placeholder="请输入关联茶园" />
+<!--          <el-form :model="form.teaGardenId">-->
+<!--            <el-form-item v-for="item in teaGardenList" :key="'teaGarden_' + item.teaGardenId">-->
+<!--              <el-input :value="item.name" disabled></el-input>-->
+<!--            </el-form-item>-->
+<!--          </el-form>-->
+
+          <el-select disabled v-model="form.teaGardenId" placeholder="请选择关联茶园">
+            <el-option
+              v-for="item in teaGardenList"
+              :key="'teaGarden_' + item.teaGardenId"
+              :label="item.name"
+              :value="item.teaGardenId"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="茶种类" prop="type">
           <el-select v-model="form.type" placeholder="请选择茶种类">
@@ -124,7 +137,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="占比(%)" prop="proportion">
-          <el-input v-model="form.proportion" placeholder="请输入占比(%)" />
+          <el-input v-model="form.proportion" type="number" style="width: 216px" placeholder="请输入占比(%)" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -226,15 +239,15 @@ export default {
       console.log(this.form)
       this.form = {
         id: null,
-        //teaGardenId: null,
+        teaGardenId: null,
         type: null,
         proportion: null
       };
       this.resetForm("form");
       let id = this.$route.query.id;
       if(id){
-        this.queryParams.teaGardenId = id;
-        this.form.teaGardenId = id;
+        this.queryParams.teaGardenId = parseInt(id);
+        this.form.teaGardenId = parseInt(id);
       }
     },
     /** 搜索按钮操作 */
@@ -256,6 +269,7 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
+      // console.log(this.teaGardenList)
       this.open = true;
       this.title = "添加茶园种植种类占比";
     },
@@ -318,6 +332,19 @@ export default {
           this.exportLoading = false;
         }).catch(() => {});
     },
+    //关联茶园格式化
+    teaGardenFormatter(row,col,value){
+      let teaGardenName = '';
+      if(value){
+        this.teaGardenList.forEach(item => {
+          if(item.teaGardenId == value){
+            teaGardenName = item.name;
+            return;
+          }
+        })
+      }
+      return teaGardenName;
+    }
   }
 };
 </script>

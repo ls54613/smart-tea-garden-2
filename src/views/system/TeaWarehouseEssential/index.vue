@@ -216,6 +216,7 @@ export default {
       this.loading = true;
       listTeaWarehouseEssential(this.queryParams).then(response => {
         this.TeaWarehouseEssentialList = response.rows;
+        // console.log(this.TeaWarehouseEssentialList)
         this.total = response.total;
         this.loading = false;
       });
@@ -237,7 +238,7 @@ export default {
         utilization: null,
         personCharge: null,
         quantity: null,
-        outboundVolume: null
+        outboundVolume: null,
       };
       this.resetForm("form");
     },
@@ -302,10 +303,13 @@ export default {
           type: "warning"
         }).then(function() {
           return delTeaWarehouseEssential(ids);
-        }).then(() => {
-          this.getList();
+        }).then((res) => {
+        console.log(res)
           this.msgSuccess("删除成功");
-        }).catch(() => {});
+          this.getList();
+        }).catch((e) => {
+        console.log(e)
+      });
     },
     /** 导出按钮操作 */
     handleExport() {

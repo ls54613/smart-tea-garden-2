@@ -1,23 +1,15 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="采购日期" prop="purchaseDate">
-        <el-date-picker clearable size="small"
-          v-model="queryParams.purchaseDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择采购日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="关联茶企" prop="teaEnterpriseId">
-        <el-select v-model="queryParams.teaEnterpriseId" filterable placeholder="请选择关联茶企">
-          <el-option
-            v-for="item in enterpriseInfoList"
-            :key="item.id"
-            :label="item.enterpriseName"
-            :value="item.id">
-          </el-option>
-        </el-select>
+      <el-form-item label="年份" prop="year">
+        <el-input
+          v-model="queryParams.year"
+          placeholder="请输入年份
+年份"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -33,7 +25,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:teaEnterpriseProcurement:add']"
+          v-hasPermi="['system:teaMarketYear:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -44,7 +36,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['system:teaEnterpriseProcurement:edit']"
+          v-hasPermi="['system:teaMarketYear:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -55,7 +47,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['system:teaEnterpriseProcurement:remove']"
+          v-hasPermi="['system:teaMarketYear:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -66,23 +58,22 @@
           size="mini"
 		  :loading="exportLoading"
           @click="handleExport"
-          v-hasPermi="['system:teaEnterpriseProcurement:export']"
+          v-hasPermi="['system:teaMarketYear:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="teaEnterpriseProcurementList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="teaMarketYearList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="采购情况id" align="center" prop="id" />
-      <el-table-column label="采购日期" align="center" prop="purchaseDate" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.purchaseDate, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="采购物品" align="center" prop="purchaseGoods" />
-      <el-table-column label="采购数量" align="center" prop="purchaseNumber" />
-      <el-table-column label="关联茶企" align="center" prop="teaEnterpriseId" :formatter="enterpriseFormatter" />
+      <el-table-column label="茶市id" align="center" prop="id" />
+      <el-table-column label="年份" align="center" prop="year" />
+      <el-table-column label="中国茶叶内销总量(万吨)" align="center" prop="teaTotalSales" />
+      <el-table-column label="中国茶叶线上占比(%)" align="center" prop="teaOnlineProportion" />
+      <el-table-column label="中国茶叶线下占比(%)" align="center" prop="teaOfflineProportion" />
+      <el-table-column label="中国茶叶人均消费量(千克)" align="center" prop="teaCapitaConsumption" />
+      <el-table-column label="常宁茶叶内销总量(万吨)" align="center" prop="teaChangningTotalSales" />
+      <el-table-column label="常宁茶叶产量(吨)" align="center" prop="teaChangningYield" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -90,14 +81,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:teaEnterpriseProcurement:edit']"
+            v-hasPermi="['system:teaMarketYear:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:teaEnterpriseProcurement:remove']"
+            v-hasPermi="['system:teaMarketYear:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -111,32 +102,29 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改近半年采购情况对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="采购日期" prop="purchaseDate">
-          <el-date-picker clearable size="small"
-            v-model="form.purchaseDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择采购日期">
-          </el-date-picker>
+    <!-- 添加或修改茶市基本情况表对话框 -->
+    <el-dialog :title="title" :center="true" :visible.sync="open" width="900px" append-to-body>
+      <el-form ref="form" :inline="true" :model="form" :rules="rules" label-width="180px">
+        <el-form-item label="年份"  prop="year" >
+          <el-input v-model="form.year"  placeholder="请输入年份年份" />
         </el-form-item>
-        <el-form-item label="采购物品" prop="purchaseGoods">
-          <el-input v-model="form.purchaseGoods" style="width: 220px" placeholder="请输入采购物品" />
+        <el-form-item label="中国茶叶内销总量(万吨)" prop="teaTotalSales">
+          <el-input v-model="form.teaTotalSales"  placeholder="请输入中国茶叶内销总量" />
         </el-form-item>
-        <el-form-item label="采购数量" prop="purchaseNumber">
-          <el-input v-model="form.purchaseNumber" style="width: 220px" placeholder="请输入采购数量" />
+        <el-form-item label="中国茶叶线上占比(%)" prop="teaOnlineProportion">
+          <el-input v-model="form.teaOnlineProportion"  placeholder="请输入中国茶叶线上占比" />
         </el-form-item>
-        <el-form-item label="关联茶企" prop="teaEnterpriseId">
-          <el-select v-model="form.teaEnterpriseId" filterable placeholder="请选择关联茶企">
-            <el-option
-              v-for="item in enterpriseInfoList"
-              :key="item.id"
-              :label="item.enterpriseName"
-              :value="item.id">
-            </el-option>
-          </el-select>
+        <el-form-item label="中国茶叶线下占比(%)" prop="teaOfflineProportion">
+          <el-input v-model="form.teaOfflineProportion"  placeholder="请输入中国茶叶线下占比" />
+        </el-form-item>
+        <el-form-item label="中国茶叶人均消费量(千克)" prop="teaCapitaConsumption">
+          <el-input v-model="form.teaCapitaConsumption"  placeholder="请输入中国茶叶人均消费量" />
+        </el-form-item>
+        <el-form-item label="常宁茶叶内销总量(万吨)" prop="teaChangningTotalSales">
+          <el-input v-model="form.teaChangningTotalSales"  placeholder="请输入常宁茶叶内销总量" />
+        </el-form-item>
+        <el-form-item label="常宁茶叶产量(吨)" prop="teaChangningYield">
+          <el-input v-model="form.teaChangningYield"  placeholder="请输入常宁茶叶产量" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -148,10 +136,10 @@
 </template>
 
 <script>
-import { listTeaEnterpriseProcurement, getTeaEnterpriseProcurement, delTeaEnterpriseProcurement, addTeaEnterpriseProcurement, updateTeaEnterpriseProcurement, exportTeaEnterpriseProcurement } from "@/api/system/teaEnterpriseProcurement";
-import {listTeaEnterpriseInfoAll} from '@/api/system/teaEnterpriseInfo';
+import { listTeaMarketYear, getTeaMarketYear, delTeaMarketYear, addTeaMarketYear, updateTeaMarketYear, exportTeaMarketYear } from "@/api/system/teaMarketYear";
+
 export default {
-  name: "TeaEnterpriseProcurement",
+  name: "TeaMarketYear",
   data() {
     return {
       // 遮罩层
@@ -168,9 +156,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 近半年采购情况表格数据
-      teaEnterpriseProcurementList: [],
-      enterpriseInfoList: [], //茶企列表
+      // 茶市基本情况表表格数据
+      teaMarketYearList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -179,30 +166,27 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        purchaseDate: null,
-        purchaseGoods: null,
-        purchaseNumber: null,
-        teaEnterpriseId: null
+        year: null,
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
+        year: [
+          { required: true, message: "年份年份不能为空", trigger: "blur" }
+        ],
       }
     };
   },
   created() {
     this.getList();
-    listTeaEnterpriseInfoAll().then(res => {
-        this.enterpriseInfoList = res.data;
-    })
   },
   methods: {
-    /** 查询近半年采购情况列表 */
+    /** 查询茶市基本情况表列表 */
     getList() {
       this.loading = true;
-      listTeaEnterpriseProcurement(this.queryParams).then(response => {
-        this.teaEnterpriseProcurementList = response.rows;
+      listTeaMarketYear(this.queryParams).then(response => {
+        this.teaMarketYearList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -216,10 +200,13 @@ export default {
     reset() {
       this.form = {
         id: null,
-        purchaseDate: null,
-        purchaseGoods: null,
-        purchaseNumber: null,
-        teaEnterpriseId: null
+        year: null,
+        teaTotalSales: null,
+        teaOnlineProportion: null,
+        teaOfflineProportion: null,
+        teaCapitaConsumption: null,
+        teaChangningTotalSales: null,
+        teaChangningYield: null
       };
       this.resetForm("form");
     },
@@ -243,16 +230,16 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加近半年采购情况";
+      this.title = "添加茶市基本情况表";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
-      getTeaEnterpriseProcurement(id).then(response => {
+      getTeaMarketYear(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改近半年采购情况";
+        this.title = "修改茶市基本情况表";
       });
     },
     /** 提交按钮 */
@@ -260,13 +247,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
-            updateTeaEnterpriseProcurement(this.form).then(response => {
+            updateTeaMarketYear(this.form).then(response => {
               this.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addTeaEnterpriseProcurement(this.form).then(response => {
+            addTeaMarketYear(this.form).then(response => {
               this.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -278,12 +265,12 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除近半年采购情况编号为"' + ids + '"的数据项?', "警告", {
+      this.$confirm('是否确认删除茶市基本情况表编号为"' + ids + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(function() {
-          return delTeaEnterpriseProcurement(ids);
+          return delTeaMarketYear(ids);
         }).then(() => {
           this.getList();
           this.msgSuccess("删除成功");
@@ -292,28 +279,17 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有近半年采购情况数据项?', "警告", {
+      this.$confirm('是否确认导出所有茶市基本情况表数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
           this.exportLoading = true;
-          return exportTeaEnterpriseProcurement(queryParams);
+          return exportTeaMarketYear(queryParams);
         }).then(response => {
           this.download(response.msg);
           this.exportLoading = false;
         }).catch(() => {});
-    },
-    //所属企业格式化
-    enterpriseFormatter(row, column,value){
-      let enterpriseName = '';
-      this.enterpriseInfoList.forEach(enterpriseInfo => {
-        if(value == enterpriseInfo.id){
-          enterpriseName = enterpriseInfo.enterpriseName;
-          return;
-        }
-      });
-      return enterpriseName;
     }
   }
 };
