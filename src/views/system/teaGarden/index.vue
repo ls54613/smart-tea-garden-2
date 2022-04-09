@@ -77,6 +77,7 @@
       <el-table-column label="预计总产量" align="center" prop="totalProduction" />
       <el-table-column label="茶园类型" align="center" prop="teaTypeName" />
       <el-table-column label="负责人" align="center" prop="head" />
+      <el-table-column label="所属区域" align="center" prop="region" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200px">
         <template slot-scope="scope">
           <el-button
@@ -171,8 +172,8 @@
             <el-option
               v-for="dictIndex in regionOptions"
               :key="dictIndex.dictValue"
-              :label="dictIndex.dictLabel"
-              :value="parseInt(dictIndex.dictValue)" />
+              :label="dictIndex.dictValue"
+              :value="dictIndex.dictValue"/>
           </el-select>
         </el-form-item>
       </el-form>
