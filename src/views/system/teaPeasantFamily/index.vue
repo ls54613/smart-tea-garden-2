@@ -128,7 +128,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -143,7 +143,7 @@
         <el-form-item label="成员姓名" prop="familyName">
           <el-input v-model="form.familyName" placeholder="请输入成员姓名" />
         </el-form-item>
-        <el-form-item label="性别0=男 1=女 2=未知" prop="familySex">
+        <el-form-item label="性别" prop="familySex">
           <el-select v-model="form.familySex" placeholder="请选择性别0=男 1=女 2=未知">
             <el-option label="请选择字典生成" value="" />
           </el-select>

@@ -112,13 +112,13 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="当前年份" prop="year">
-          <el-input v-model="form.year" placeholder="" readonly disabled />
+          <el-input style="width: 220px" v-model="form.year" placeholder="" readonly disabled />
         </el-form-item>
         <el-form-item label="预计收入(元)" prop="estimatedIncome">
-          <el-input v-model.number="form.estimatedIncome" placeholder="请输入预计收入" />
+          <el-input style="width: 220px" v-model.number="form.estimatedIncome" placeholder="请输入预计收入" />
         </el-form-item>
         <el-form-item label="收入类型" prop="incomeType">
-          <el-input v-model="form.incomeType" placeholder="请输入收入类型" />
+          <el-input style="width: 220px" v-model="form.incomeType" placeholder="请输入收入类型" />
         </el-form-item>
         <el-form-item label="是否增收" prop="whetherIncrease">
           <el-select style="width: 220px" v-model="form.whetherIncrease" placeholder="请选择是否增收">
@@ -130,7 +130,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="关联茶农" prop="teaPeasantId">
-          <el-select v-model="form.teaPeasantId" placeholder="请选择关联茶农">
+          <el-select style="width: 220px" v-model="form.teaPeasantId" placeholder="请选择关联茶农">
             <el-option
               v-for="item in teaPeasantList"
               :key="item.id"
