@@ -701,7 +701,7 @@ export default {
         this.roleOptions = response.roles
         this.open = true
         this.title = '添加用户'
-        this.form.password = this.initPassword
+        // this.form.password = this.initPassword
       })
     },
     /** 修改按钮操作 */

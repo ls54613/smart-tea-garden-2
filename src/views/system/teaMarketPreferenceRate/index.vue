@@ -65,7 +65,7 @@
 
     <el-table v-loading="loading" :data="teaMarketPreferenceRateList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="偏好率" align="center" prop="id" />
+      <el-table-column label="编号" align="center" prop="id" />
       <el-table-column label="茶品种类" align="center" prop="teaType" />
       <el-table-column label="偏好率(%)" align="center" prop="preferenceRate" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">

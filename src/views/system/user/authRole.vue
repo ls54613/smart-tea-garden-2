@@ -71,8 +71,9 @@ export default {
     if (userId) {
       this.loading = true;
       getAuthRole(userId).then((response) => {
+        console.log(response);
         this.form = response.user;
-        this.roles = response.roles;
+        this.roles = response.user.roles;
         this.total = this.roles.length;
         this.$nextTick(() => {
           this.roles.forEach((row) => {

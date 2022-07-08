@@ -36,7 +36,7 @@ export default {
   },
   data() {
     return {
-      title: '智慧农业管理平台',
+      title: '智慧茶园管理平台',
       logo: logoImg,
       enterprise:''
     }
